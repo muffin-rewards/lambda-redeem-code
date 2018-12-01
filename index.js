@@ -41,7 +41,6 @@ exports.handler = (event, _, callback) => {
     })
     .then(() => ({ status: 200, body: '' }))
     .catch((error = {}) => {
-      console.log(error)
       return {
         status: error.status || 500,
         body: {
