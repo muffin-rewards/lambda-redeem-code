@@ -1,0 +1,24 @@
+{
+  "name": "lambda-redeem-code",
+  "version": "1.0.0",
+  "author": "Michael Bausano <bausanomichal@gmail.com>",
+  "license": "MIT",
+  "description": "Redeems a code if valid.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muffin-rewards/lambda-redeem-code"
+  },
+  "scripts": {
+    "create:stage": "claudia create --name stage-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/FullAccessDynamoDB --config claudia-stage.json",
+    "create:prod": "claudia create --name prod-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/FullAccessDynamoDB --config claudia-prod.json",
+    "deploy:stage": "claudia update --config claudia-stage.json",
+    "deploy:prod": "claudia update --config claudia-prod.json"
+  },
+  "devDependencies": {
+    "claudia": "^5.1.1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.320.0"
+  }
+}
