@@ -10,8 +10,8 @@
     "url": "https://github.com/muffin-rewards/lambda-redeem-code"
   },
   "scripts": {
-    "create:stage": "claudia create --name stage-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/FullAccessDynamoDB --config claudia-stage.json",
-    "create:prod": "claudia create --name prod-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/FullAccessDynamoDB --config claudia-prod.json",
+    "create:stage": "claudia create --name stage-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/DynamoDBFullAccess --config claudia-stage.json",
+    "create:prod": "claudia create --name prod-redeem-code --region eu-west-1 --handler index.handler --role arn:aws:iam::490542543401:role/DynamoDBFullAccess --config claudia-prod.json",
     "deploy:stage": "claudia update --config claudia-stage.json",
     "deploy:prod": "claudia update --config claudia-prod.json"
   },

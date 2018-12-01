@@ -1,55 +1,28 @@
 const AWS = require('aws-sdk')
 const ddb = new AWS.DynamoDB()
-const TableName = process.env.DDB_TABLE
 
 exports.handler = (event, _, callback) => {
-  const { headers, pathParameters } = event
-
-  return new Promise((resolve, reject) => {
-    typeof headers.Authorization === 'string'
-      ? resolve()
-      : reject({
-        status: 403,
-        message: 'Unauthorized'
-      })
-  })
-    .then(() => {
+  return Promise.resolve(event.body)
+    .then(JSON.parse)
+    .then(({ code }) => {
       return ddb.query({
-        IndexName: 'userId-index',
-        TableName,
-        KeyConditionExpression: 'userId = :ui',
+        TableName: process.env.DDB_TABLE,
+        KeyConditionExpression: 'id = :code',
         ExpressionAttributeValues: {
-          ':ui': { S: headers.Authorization.replace('Bearer ', '') }
+          ':code': { S: code }
         }
       }).promise()
     })
-    .then(({ Items }) => {
-      if (!Items || !Items.length) {
-        throw { status: 400, message: 'ResourceNotFound' }
-      }
-
-      let code = Items
-        .filter(item => item.used.BOOL === false && item.reward.S === pathParameters.id)
-        .pop().code.S
-
-      if (!code) {
-        throw { status: 400, message: 'CodeHasBeenUsed' }
-      }
-
-      return {
-        status: 200,
-        body: {
-          status: 200,
-          content: { code }
-        }
-      }
+    .then((result) => {
+      console.log('res', result)
     })
     .catch((error = {}) => {
+      console.log(error)
       return {
-        status: error.status || 500,
+        status: error.status || 404,
         body: {
-          status: error.status || 500,
-          message: error.message || 'InternalServerError'
+          status: error.status || 404,
+          message: error.message || 'CodeNotFound'
         }
       }
     })
