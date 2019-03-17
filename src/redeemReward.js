@@ -16,7 +16,10 @@ const ddb = new AWS.DynamoDB()
  * @param {number|null} checksum
  */
 exports.redeemReward = async (user, promoter, checksum) => {
-  const response = await ddb.updateItem({
+  /**
+   * @var {object} Attributes Information about the updated row
+   */
+  const { Attributes } = await ddb.updateItem({
     TableName: process.env.MENTIONS_TABLE,
     Key: {
       user: { S: user },
@@ -27,10 +30,16 @@ exports.redeemReward = async (user, promoter, checksum) => {
       '#at': 'redeemedAt',
     },
     ExpressionAttributeValues: {
-      ':b': { NUMBER: Date.now() },
+      ':b': { N: String(Date.now()) },
     },
-    ReturnValues: 'ALL_OLD'
+    ReturnValues: 'ALL_OLD',
   }).promise()
 
-  console.log('hasMentionedResponse', response, checksum)
+  const lastUsed = Attributes.redeemedAt ? Attributes.redeemedAt.N : null
+
+  if (lastUsed === checksum) {
+    return
+  }
+
+  throw new RewardRedeemedException
 }

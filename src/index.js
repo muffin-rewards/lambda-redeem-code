@@ -20,9 +20,12 @@ exports.handler = async (event, _, callback) => {
 
   try {
     /**
-     * We are looking for user mentioning promoter.
+     * @var {string} user Users Instagram handle
+     *
+     * @var {string} promoter Promoter that the user wants to collect a reward for
      */
-    const { promoter, user } = JSON.parse(event.body)
+    const { user, promoter } = event.pathParameters
+
 
     /**
      * @var {number|null} checksum Prevents double spending issues

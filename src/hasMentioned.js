@@ -26,11 +26,15 @@ exports.hasMentioned = async (user, promoter) => {
    */
   const { Items } = await ddb.query({
     TableName: process.env.MENTIONS_TABLE,
-    KeyConditionExpression: 'user = :user AND promoter = :promoter',
     ExpressionAttributeValues: {
       ':user': { S: user },
       ':promoter': { S: promoter },
-    }
+    },
+    ExpressionAttributeNames:{
+      '#u': 'user',
+      '#p': 'promoter',
+    },
+    KeyConditionExpression: '#u = :user AND #p = :promoter',
   }).promise()
 
   if (!Items || !Items.length) {
